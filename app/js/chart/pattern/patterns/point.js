@@ -1,7 +1,7 @@
 import Base from '../base.js';
 import util from '../../util.js'
 const className = 'circle pattern-point';
-class Func extends Base {
+class Point extends Base {
 
     constructor(chart,
         {
@@ -13,7 +13,10 @@ class Func extends Base {
             }={},
                 autoDraw = false) {
         super(chart);
-
+        
+        /**
+         * 坐标 [x,y]
+         */
         this.coordinate = data;
         this.lastCoordinate = [data[0], data[1]];
         this.color = color;
@@ -111,4 +114,4 @@ class Func extends Base {
 
 }
 
-export default Func;
+export default Point;
