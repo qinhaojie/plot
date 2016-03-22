@@ -24,7 +24,14 @@ var util = {
         approximate = approximate ? approximate : 2;
         var x = Math.pow(10, approximate)
         return Math.ceil(number * x) / x
-    }
+    },
+    
+    uniqueId :(function () {
+       let i = new Date().getTime(); 
+       return function () {
+           return i++;
+       }
+    }())
 
 }
 

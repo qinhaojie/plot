@@ -1,19 +1,19 @@
 import Base from '../base.js';
 import util from '../../util.js'
-const className = 'circle pattern-point';
-class Point extends Base {
+const className = 'circle pattern-line';
+class Line extends Base {
 
     constructor(chart,
         {
             //坐标系坐标，客户端坐标需要在传之前转换
-            data = [],
-            color = '#ccc',
+            data=[],
+            color='#ccc',
             r = 3,
             stroke = '#666'
-        } = {},
-        autoDraw = false) {
+            }={},
+                autoDraw = false) {
         super(chart);
-
+     
         this.coordinate = data;
         this.lastCoordinate = [data[0], data[1]];
         this.color = color;
@@ -29,11 +29,11 @@ class Point extends Base {
 
     draw() {
         super.draw()
-        var [x, y] = this.getData(this.coordinate);
+        var [x,y] = this.getData(this.coordinate);
 
         this.group
             .attr('transform', 'translate(' + x + ',' + y + ')')
-
+       
         this.tip
             .text(util.approximate(this.coordinate[0]) + ',' + util.approximate(this.coordinate[1]))
 
@@ -54,14 +54,15 @@ class Point extends Base {
 
     buildDom() {
 
-        if (this.dom) return;
+        if (this.dom)return;
 
-        super.buildDom();
+        this.group = this.graph
+            .append('g')
 
         this.dom = this.group
             .append('circle')
             .attr("class", className)
-
+            .attr('id', this.id)
             .attr('fill', this.color)
             .attr('stroke', this.stroke)
             .attr('r', this.r)
@@ -109,4 +110,4 @@ class Point extends Base {
 
 }
 
-export default Point;
+export default Line;

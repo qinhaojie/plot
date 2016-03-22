@@ -6,7 +6,7 @@ var parser = math.parser();
 parser.eval('f(x)=sin(1/x)')
 var fnn = parser.get('f');
 parser.eval('f2(x)=1/(x-0.125156)');
-d3.ascending
+
 
 var a = new Chart({
     container: document.getElementById('app'),

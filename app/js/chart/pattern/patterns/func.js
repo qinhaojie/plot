@@ -74,11 +74,11 @@ class Func extends Base {
     buildDom() {
 
         if (this.dom)return;
-
-        this.dom = this.graph
+        super.buildDom();
+        this.dom = this.group
             .append('path')
             .attr("class", className)
-            .attr('id', this.id)
+          
 
 
     }
