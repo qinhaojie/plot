@@ -12,7 +12,7 @@ class Chart extends events {
 
     constructor({
         container = document.body,
-        xAxes ={
+        xAxes = {
             domain: [-10, 10]
         },
         yAxes = {
@@ -20,7 +20,7 @@ class Chart extends events {
         },
         content = {},
 
-        }={},
+    } = {},
         //操作模式
         mode = 'move') {
 
@@ -28,11 +28,11 @@ class Chart extends events {
 
         this.container = container;
         var margin = {
-                top: 20,
-                right: 40,
-                bottom: 20,
-                left: 40
-            },
+            top: 20,
+            right: 40,
+            bottom: 20,
+            left: 40
+        },
             width = container.clientWidth - margin.left - margin.right,
             height = container.clientHeight - margin.top - margin.bottom;
         this.layout = {
@@ -92,7 +92,7 @@ class Chart extends events {
 
     translateContent(content) {
         this.content = {};
-        Object.keys(content).forEach((name, i)=> {
+        Object.keys(content).forEach((name, i) => {
 
             this.content[name] = content[name].map(item => {
                 return new pattern[name](this, item);
@@ -151,7 +151,7 @@ class Chart extends events {
             })
             .attr('y1', that.layout.h)
             .attr('y2', 0)
-            .attr('value', function (d) {
+            .attr('value', function(d) {
                 return d;
             })
 
@@ -166,7 +166,7 @@ class Chart extends events {
             })
             .attr('x1', that.layout.w)
             .attr('x2', 0)
-            .attr('value', function (d) {
+            .attr('value', function(d) {
                 return d;
             })
 
@@ -190,7 +190,7 @@ class Chart extends events {
         zoom.x(this.scaleX)
             .y(this.scaleY)
 
-            .on('zoom', function () {
+            .on('zoom', function() {
 
                 if (that.mode != 'move') {
                     //zoom.x(tempScale).y(tempScale)
@@ -204,8 +204,7 @@ class Chart extends events {
 
             })
 
-        this.graph.append('rect')
-
+        this.rect = this.graph.append('rect')
             .attr('x', 0)
             .attr('y', 0)
             .attr('width', this.layout.w)
@@ -217,7 +216,7 @@ class Chart extends events {
 
         for (let e of Object.keys(event)) {
 
-            this.graph.on(event[e], function () {
+            d3.select(this.container).on(event[e], function() {
 
                 let controller = {
                     emit: true
@@ -228,14 +227,14 @@ class Chart extends events {
                 if (controller.emit == false) return;
 
                 d3.event.preventDefault();
-                that.emit(event[e], d3.event, d3.mouse(this));
+                that.emit(event[e], d3.event, that.getMouse());
 
 
             })
         }
 
 
-        this.on('_' + event.down, function (ctrl) {
+        this.on('_' + event.down, function(ctrl) {
             this.lastTarget = this.focusTarget;
             this.focusTarget = this.activeTarget;
             this.dragStart = true;
@@ -249,13 +248,13 @@ class Chart extends events {
             }
             if (this.activeTarget) {
                 ctrl.emit = false;
-
             }
         })
 
-        this.on('_' + event.move, function (ctrl) {
+        this.on('_' + event.move, function(ctrl) {
 
             var target = this.getSelect(this.getMouse());
+          
             if (target && target !== this.activeTarget) {
                 this.activeTarget && this.activeTarget.blur();
                 target.focus();
@@ -275,22 +274,23 @@ class Chart extends events {
 
         });
 
-        this.on('_' + event.up, function (ctrl) {
+        this.on('_' + event.up, function(ctrl) {
+
             this.dragStart = false;
             if (this.mode == '_move') {
                 this.setMode('move');
             }
-            this.emit('dragtargetend', this.focusTarget)
+            this.emit('dragtargetend', this.focusTarget);
 
         });
 
-        this.on('dragtarget', function (target) {
+        this.on('dragtarget', function(target) {
             var c = this.getMouse();
-            var [x,y] = this.dragStartPoint;
+            var [x, y] = this.dragStartPoint;
             target.move([c[0] - x, c[1] - y])
         });
 
-        this.on('dragtargetend', function (target) {
+        this.on('dragtargetend', function(target) {
             if (target) {
                 target.moveEnd();
             }
@@ -303,7 +303,7 @@ class Chart extends events {
      * @param px
      * @param py
      */
-    getSelect([px,py]) {
+    getSelect([px, py]) {
         for (let patterns of Object.keys(this.content)) {
 
             for (let p of this.content[patterns]) {

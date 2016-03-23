@@ -28,7 +28,7 @@ class Line extends Base {
     }
 
     draw() {
-        super.draw()
+
         var [x, y] = this.getData(this.coordinate);
 
         this.group
@@ -37,7 +37,7 @@ class Line extends Base {
         this.tip
             .text(util.approximate(this.coordinate[0]) + ',' + util.approximate(this.coordinate[1]))
 
-
+        super.draw()
     }
 
     //将坐标系坐标转换为客户端坐标
@@ -56,7 +56,7 @@ class Line extends Base {
 
         if (this.dom) return;
         super.buildDom();
-       
+
 
         this.dom = this.group
             .append('circle')

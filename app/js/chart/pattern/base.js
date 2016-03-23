@@ -2,6 +2,7 @@ import events from 'events';
 import Chart from '../index.js';
 import util from "../util.js";
 
+const gClassName = 'pattern';
 class Base extends events {
 
     constructor(chart) {
@@ -30,24 +31,55 @@ class Base extends events {
 
     draw() {
         this.isDrew = true;
+        this.emit('drew');
     }
 
     isContact(p) {
-        return false;
+        return this.isHover;
     }
 
     focus() {
-        this.dom.classed('active', true)
+        this.group.classed(this.activeClassName, true);
     }
 
     blur() {
-        this.dom.attr('active', false)
+        this.group.classed(this.activeClassName, false);
     }
 
     buildDom() {
         this.group = this.graph
             .append('g')
             .attr('id', this.id)
+            .attr('class',gClassName);
+        var that = this;
+        this.group
+        .on('mouseover',function () {
+            that.isHover  =true;
+           // console.log(this,true)
+        })
+        .on('mouseout',function () {
+            that.isHover  =false;
+            // console.log(this,false)
+        })
+        
+    }
+    
+    /**
+     * 将客户端坐标转差值换为坐标系坐标差值
+     */
+    pxToUnit([dx,dy]){
+        var uxPerPx = this.scaleX(1) - this.scaleX(0);// px/unit
+        var uyPerPx = this.scaleY(1) - this.scaleY(0);
+        
+        return [dx/uxPerPx,dy/uyPerPx];
+    }
+    
+    get proxyClassName(){
+        return 'proxy';
+    }
+    
+    get activeClassName(){
+        return 'active';
     }
 }
 
