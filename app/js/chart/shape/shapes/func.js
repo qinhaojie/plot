@@ -93,7 +93,7 @@ class Func extends Base {
         this.proxyDom = this.group
             .append('path')
             .attr("class", this.proxyClassName)
-            .attr('stroke-width', proxyPathWidth)
+            .attr('stroke-width', this.proxyPathWidth)
             .attr('fill', 'none')
             .attr('stroke', 'rgba(0,0,0,0)')
 

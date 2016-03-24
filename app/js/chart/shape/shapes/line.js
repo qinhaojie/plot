@@ -1,12 +1,13 @@
 import Base from '../base.js';
 import util from '../../util.js';
-const className = 'circle shape-line';
+import Point from './point.js';
+const className = 'line shape-line';
 class Line extends Base {
 
     constructor(chart,
         {
-            //坐标系坐标，客户端坐标需要在传之前转换
-            points = [
+            //Point实例
+            data = [
             ],
             color = '#ccc',
             r = 3,
@@ -15,8 +16,29 @@ class Line extends Base {
         autoDraw = false) {
         super(chart);
 
-        [this.startPoint,this.endPoint] = points;
-        
+        this.points = [];
+        for (let point of data) {
+
+            if (!point.ccoordinate) {
+                // point = new Point(chart, {
+                //     data: point
+                // })
+
+                point = chart._add('point', {
+                    data: point
+                })
+            }
+
+
+            point.on('move', function() {
+                this.draw();
+            }.bind(this))
+
+            this.points.push(point);
+        }
+
+
+
         this.color = color;
         this.r = r;
         this.stroke = stroke;
@@ -26,32 +48,41 @@ class Line extends Base {
             this.draw();
         }
 
+
     }
 
     draw() {
 
-        var [x, y] = this.getData(this.coordinate);
+        var path = this.getData();
 
-        this.group
-            .attr('transform', 'translate(' + x + ',' + y + ')')
-
-        this.tip
-            .text(util.approximate(this.coordinate[0]) + ',' + util.approximate(this.coordinate[1]))
-
-        super.draw()
+        this.dom
+            .attr('d', path)
+        this.proxyDom
+            .attr('d', path);
+        super.draw();
     }
 
-    //将坐标系坐标转换为客户端坐标
-    getData(p) {
-        if (!p) {
-            p = this.coordinate;
+
+    getData() {
+        var p = this.getPoints();
+        var path = "M";
+        for (let [x, y] of p) {
+            path = path + x + ' ' + y + ' ';
         }
-        var x = this.scaleX;
-        var y = this.scaleY;
 
-        return [x(p[0]), y(p[1])];
+        return path;
+
     }
 
+    /**
+     * 获取点的坐标
+     * @return [Array] [[x1,y1],[x2,y2]]
+     */
+    getPoints() {
+        return this.points.map(function(point) {
+            return point.getData();
+        })
+    }
 
     buildDom() {
 
@@ -60,51 +91,37 @@ class Line extends Base {
 
 
         this.dom = this.group
-            .append('circle')
+            .append('path')
             .attr("class", className)
-
             .attr('fill', this.color)
             .attr('stroke', this.stroke)
-            .attr('r', this.r)
-            .attr('cx', 0)
-            .attr('cy', 0)
+
         this.tip = this.group
             .append('text')
             .attr('dx', 3)
             .attr('dy', -3)
 
+        this.proxyDom = this.group
+            .append('path')
+            .attr("class", this.proxyClassName)
+            .attr('stroke-width', this.proxyPathWidth)
 
-    }
+            .attr('fill', 'none')
+            .attr('stroke', 'rgba(0,0,0,0)');
 
-    isContact(p) {
-        var r = 6;
-        return (util.distance(p, this.getData()) <= r)
-    }
-
-    focus() {
-        this.dom.attr('fill', 'red')
-    }
-
-    blur() {
-        this.dom.attr('fill', this.color)
     }
 
     move([dx, dy]) {
-        //let [x,y] = this.getData();
-        //x += dx;
-        //y += dy;
-        var uxPerPx = this.scaleX(1) - this.scaleX(0);// px/unit
-        var uyPerPx = this.scaleY(1) - this.scaleY(0);
-        this.coordinate[0] = this.lastCoordinate[0] + dx / uxPerPx;
-        this.coordinate[1] = this.lastCoordinate[1] + dy / uyPerPx;
-        this.draw();
+        for (let point of this.points) {
+            point.move([dx, dy]);
+        }
     }
 
     moveEnd() {
-        this.lastCoordinate[0] = this.coordinate[0];
-        this.lastCoordinate[1] = this.coordinate[1];
-        this.draw();
 
+        for (let point of this.points) {
+            point.moveEnd();
+        }
     }
 
 

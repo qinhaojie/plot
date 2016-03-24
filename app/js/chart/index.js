@@ -335,14 +335,22 @@ class Chart extends events {
 
     add(type, config) {
         if (this.mode != 'add') return;
+        var ret =  this._add(type,config);
+        this.lastTarget && this.lastTarget.blur();
+        this.activeTarget = this.focusTarget = ret;
+        ret.focus();
+        return ret;
+
+    }
+
+    _add(type, config) {
         if (!this.content[type]) {
             this.content[type] = [];
         }
         var n = new shape[type](this, config, true)
         this.content[type].push(n);
-        this.lastTarget && this.lastTarget.blur();
-        this.activeTarget = this.focusTarget = n;
-        n.focus();
+        
+        return n;
     }
 
     getMouse() {

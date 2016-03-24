@@ -76,6 +76,9 @@ class Base extends events {
     get activeClassName(){
         return 'active';
     }
+    get proxyPathWidth(){
+        return 8;
+    }
 }
 
 export default Base;

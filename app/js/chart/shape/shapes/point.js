@@ -8,7 +8,7 @@ class Point extends Base {
             //坐标系坐标，客户端坐标需要在传之前转换
             data = [],
             color = '#ccc',
-            r = 3,
+            r = 6,
             stroke = '#666'
         } = {},
         autoDraw = false) {
@@ -24,7 +24,7 @@ class Point extends Base {
         if (autoDraw) {
             this.draw();
         }
-        
+
     }
 
     draw() {
@@ -71,11 +71,11 @@ class Point extends Base {
             .append('text')
             .attr('dx', 3)
             .attr('dy', -3)
-        
-         this.proxyDom = this.group
+
+        this.proxyDom = this.group
             .append('circle')
             // .attr("class", className)
-            .attr('r',this.r+3)
+            .attr('r', this.r + 5)
             .attr('fill', 'rgba(0,0,0,0)')
             .attr('stroke', 'rgba(0,0,0,0)')
 
@@ -98,10 +98,10 @@ class Point extends Base {
     }
 
     move([dx, dy]) {
-       
-        [dx,dy] = super.pxToUnit([dx,dy])
-        this.coordinate[0] = this.lastCoordinate[0] + dx ;
-        this.coordinate[1] = this.lastCoordinate[1] + dy ;
+
+        [dx, dy] = super.pxToUnit([dx, dy])
+        this.coordinate[0] = this.lastCoordinate[0] + dx;
+        this.coordinate[1] = this.lastCoordinate[1] + dy;
         this.draw();
         this.emit('move');
     }
@@ -109,7 +109,7 @@ class Point extends Base {
     moveEnd() {
         this.lastCoordinate[0] = this.coordinate[0];
         this.lastCoordinate[1] = this.coordinate[1];
-       
+
         this.emit('moveend');
 
     }
