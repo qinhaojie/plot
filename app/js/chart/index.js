@@ -1,6 +1,5 @@
-import d3 from 'd3';
 import events from 'events';
-import * as pattern from './pattern/index.js';
+import * as shape from './shape/index.js';
 
 var isPc = document.body.ontouchstart === undefined;
 var event = {
@@ -95,7 +94,7 @@ class Chart extends events {
         Object.keys(content).forEach((name, i) => {
 
             this.content[name] = content[name].map(item => {
-                return new pattern[name](this, item);
+                return new shape[name](this, item);
             });
         })
         window.c = this.content.point;
@@ -253,16 +252,18 @@ class Chart extends events {
 
         this.on('_' + event.move, function(ctrl) {
 
-            var target = this.getSelect(this.getMouse());
-          
-            if (target && target !== this.activeTarget) {
-                this.activeTarget && this.activeTarget.blur();
-                target.focus();
-                this.activeTarget = target;
-            }
-            if (!target && this.activeTarget) {
-                this.activeTarget.blur();
-                this.activeTarget = null;
+            if (!this.dragStart) {
+                var target = this.getSelect(this.getMouse());
+
+                if (target && target !== this.activeTarget) {
+                    this.activeTarget && this.activeTarget.blur();
+                    target.focus();
+                    this.activeTarget = target;
+                }
+                if (!target && this.activeTarget) {
+                    this.activeTarget.blur();
+                    this.activeTarget = null;
+                }
             }
 
 
@@ -304,9 +305,9 @@ class Chart extends events {
      * @param py
      */
     getSelect([px, py]) {
-        for (let patterns of Object.keys(this.content)) {
+        for (let shapes of Object.keys(this.content)) {
 
-            for (let p of this.content[patterns]) {
+            for (let p of this.content[shapes]) {
                 if (p.isContact([px, py])) {
                     return p;
                 }
@@ -337,7 +338,7 @@ class Chart extends events {
         if (!this.content[type]) {
             this.content[type] = [];
         }
-        var n = new pattern[type](this, config, true)
+        var n = new shape[type](this, config, true)
         this.content[type].push(n);
         this.lastTarget && this.lastTarget.blur();
         this.activeTarget = this.focusTarget = n;

@@ -2,7 +2,7 @@ import events from 'events';
 import Chart from '../index.js';
 import util from "../util.js";
 
-const gClassName = 'pattern';
+const gClassName = 'shape';
 class Base extends events {
 
     constructor(chart) {
@@ -16,7 +16,7 @@ class Base extends events {
 
         this.chart = chart;
         this.isDrew = false;
-        this.id = 'pattern-' + util.uniqueId();
+        this.id = 'shape-' + util.uniqueId();
 
         this.scaleX = chart.scaleX;
         this.scaleY = chart.scaleY;

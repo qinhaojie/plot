@@ -1,7 +1,7 @@
 import Base from '../base.js';
 import util from '../../util.js'
-const className = 'circle pattern-line';
-class Line extends Base {
+const className = 'circle shape-point';
+class Point extends Base {
 
     constructor(chart,
         {
@@ -24,7 +24,7 @@ class Line extends Base {
         if (autoDraw) {
             this.draw();
         }
-
+        
     }
 
     draw() {
@@ -55,8 +55,8 @@ class Line extends Base {
     buildDom() {
 
         if (this.dom) return;
-        super.buildDom();
 
+        super.buildDom();
 
         this.dom = this.group
             .append('circle')
@@ -71,42 +71,50 @@ class Line extends Base {
             .append('text')
             .attr('dx', 3)
             .attr('dy', -3)
+        
+         this.proxyDom = this.group
+            .append('circle')
+            // .attr("class", className)
+            .attr('r',this.r+3)
+            .attr('fill', 'rgba(0,0,0,0)')
+            .attr('stroke', 'rgba(0,0,0,0)')
 
 
     }
 
-    isContact(p) {
-        var r = 6;
-        return (util.distance(p, this.getData()) <= r)
-    }
+    // isContact(p) {
+    //     var r = 6;
+    //     return (util.distance(p, this.getData()) <= r)
+    // }
 
     focus() {
-        this.dom.attr('fill', 'red')
+        super.focus();
+        this.dom.attr('fill', 'red');
     }
 
     blur() {
-        this.dom.attr('fill', this.color)
+        super.blur();
+        this.dom.attr('fill', this.color);
     }
 
     move([dx, dy]) {
-        //let [x,y] = this.getData();
-        //x += dx;
-        //y += dy;
-        var uxPerPx = this.scaleX(1) - this.scaleX(0);// px/unit
-        var uyPerPx = this.scaleY(1) - this.scaleY(0);
-        this.coordinate[0] = this.lastCoordinate[0] + dx / uxPerPx;
-        this.coordinate[1] = this.lastCoordinate[1] + dy / uyPerPx;
+       
+        [dx,dy] = super.pxToUnit([dx,dy])
+        this.coordinate[0] = this.lastCoordinate[0] + dx ;
+        this.coordinate[1] = this.lastCoordinate[1] + dy ;
         this.draw();
+        this.emit('move');
     }
 
     moveEnd() {
         this.lastCoordinate[0] = this.coordinate[0];
         this.lastCoordinate[1] = this.coordinate[1];
-        this.draw();
+       
+        this.emit('moveend');
 
     }
 
 
 }
 
-export default Line;
+export default Point;

@@ -1,7 +1,7 @@
 import Base from '../base.js';
 
 
-const className = 'line pattern-func';
+const className = 'line shape-func';
 const proxyPathWidth = 15;
 class Func extends Base {
 

@@ -3,9 +3,9 @@ import * as math from 'mathjs'
 window.math = math
 var parser = math.parser();
 
-parser.eval('f(x)=sin(1/x)')
+parser.eval('f(x)=sin(x)^3')
 var fnn = parser.get('f');
-parser.eval('f2(x)=1/(x-0.125156)');
+parser.eval('f2(x)=x^3');
 
 
 var a = new Chart({
