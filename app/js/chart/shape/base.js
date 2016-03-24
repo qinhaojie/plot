@@ -1,5 +1,4 @@
 import events from 'events';
-import Chart from '../index.js';
 import util from "../util.js";
 
 const gClassName = 'shape';
@@ -8,12 +7,8 @@ class Base extends events {
     constructor(chart) {
 
         super()
-
-        if (!(chart instanceof Chart)) {
-
-            throw new Error('图样的构造需传入Chart作为参数')
-        }
-
+        this.setMaxListeners(0);
+       
         this.chart = chart;
         this.isDrew = false;
         this.id = 'shape-' + util.uniqueId();
