@@ -9,7 +9,7 @@ class Line extends Base {
             //Point实例
             data = [
             ],
-            color = '#ccc',
+            color = 'none',
             r = 3,
             stroke = '#666'
         } = {},
@@ -19,10 +19,7 @@ class Line extends Base {
         this.points = [];
         for (let point of data) {
 
-            if (!point.ccoordinate) {
-                // point = new Point(chart, {
-                //     data: point
-                // })
+            if (!point.coordinate) {
 
                 point = chart._add('point', {
                     data: point
@@ -36,8 +33,6 @@ class Line extends Base {
 
             this.points.push(point);
         }
-
-
 
         this.color = color;
         this.r = r;
@@ -93,7 +88,7 @@ class Line extends Base {
         this.dom = this.group
             .append('path')
             .attr("class", className)
-            .attr('fill', this.color)
+            .style('fill', this.color)
             .attr('stroke', this.stroke)
 
         this.tip = this.group

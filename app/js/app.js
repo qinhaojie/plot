@@ -39,10 +39,20 @@ var a = new Chart({
                    
                 ]
             }
+        ],
+        polygon:[
+            {
+                data:[
+                    [0,1],
+                    [1.5,1.5],
+                    [-1,1.3],
+                    [-2,0]
+                ]
+            }
         ]
     }
 });
-    
+  window.a = a;  
 a.draw();
 a.on('mousedown', function (e,[x,y]) {
 
