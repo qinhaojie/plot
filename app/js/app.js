@@ -3,9 +3,9 @@ import * as math from 'mathjs'
 window.math = math
 var parser = math.parser();
 
-parser.eval('f(x)=sin(x)^3')
+parser.eval('f(x)=sin(x)')
 var fnn = parser.get('f');
-parser.eval('f2(x)=x^3');
+parser.eval('f2(x)=cos(x)');
 
 
 var a = new Chart({
@@ -17,36 +17,45 @@ var a = new Chart({
         domain: [-2, 2]
     },
     content: {
-        func: [
-            {
-                data: parser.get('f2')
-            },
-            {
-                data: fnn
-            }
-        ],
-        point: [
-            {
-                data: [1, 0]
-            }
-        ],
-        line:[
-            {
-                data:[
-                    [1,1],
-                    [3,1],
-                    [2,1.5],
+        // func: [
+        //     {
+        //         data: parser.get('f2')
+        //     },
+        //     {
+        //         data: fnn
+        //     }
+        // ],
+        // point: [
+        //     {
+        //         data: [1, 0]
+        //     }
+        // ],
+        // line:[
+        //     {
+        //         data:[
+        //             [1,1],
+        //             [3,1],
+        //             [2,1.5],
                    
-                ]
-            }
-        ],
-        polygon:[
+        //         ]
+        //     }
+        // ],
+        // polygon:[
+        //     {
+        //         data:[
+        //             [0,1],
+        //             [1.5,1.5],
+        //             [-1,1.3],
+        //             [-2,0]
+        //         ]
+        //     }
+        // ],
+        angle:[
             {
                 data:[
-                    [0,1],
-                    [1.5,1.5],
-                    [-1,1.3],
-                    [-2,0]
+                    [-2.0,1.1],
+                    [1.2,1.2],
+                    [1.1,0]
                 ]
             }
         ]

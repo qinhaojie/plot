@@ -8,7 +8,7 @@ var util = {
      * @param y1
      * @returns {number}
      */
-    distance: function ([x0,y0], [x1,y1]) {
+    distance: function([x0, y0], [x1, y1]) {
         return Math.sqrt(
             Math.pow(x0 - x1, 2) + Math.pow(y0 - y1, 2)
         )
@@ -20,18 +20,25 @@ var util = {
      * @param approximate
      * @returns {number}
      */
-    approximate: function (number, approximate) {
+    approximate: function(number, approximate) {
         approximate = approximate ? approximate : 2;
         var x = Math.pow(10, approximate)
         return Math.ceil(number * x) / x
     },
-    
-    uniqueId :(function () {
-       let i = new Date().getTime(); 
-       return function () {
-           return i++;
-       }
-    }())
+
+    uniqueId: (function() {
+        let i = new Date().getTime();
+        return function() {
+            return i++;
+        }
+    } ()),
+
+    vectorAngle: function(vectorA, vectorB) {
+        return Math.acos(
+            (vectorA[0] * vectorB[0] + vectorA[1] * vectorB[1]) /
+            (util.distance([0, 0], vectorA) * util.distance([0, 0], vectorB))
+        )
+    }
 
 }
 
