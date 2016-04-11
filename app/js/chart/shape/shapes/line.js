@@ -38,12 +38,14 @@ class Line extends Base {
         this.r = r;
         this.stroke = stroke;
         this.buildDom();
-
+        
+        this.name = 'line';
+        
         if (autoDraw) {
             this.draw();
         }
 
-
+        
     }
 
     draw() {
@@ -84,7 +86,14 @@ class Line extends Base {
         if (this.dom) return;
         super.buildDom();
 
-
+        //path节点放在第一个点之前
+        var g = document.getElementById(this.id);
+        var point = this.points[0];
+        
+        if (point) {
+            var p = document.getElementById(point.id);
+            p.parentElement.insertBefore(g,p)
+        }
         this.dom = this.group
             .append('path')
             .attr("class", className)
@@ -103,7 +112,7 @@ class Line extends Base {
 
             .attr('fill', 'none')
             .attr('stroke', 'rgba(0,0,0,0)');
-
+            
     }
 
     move([dx, dy]) {

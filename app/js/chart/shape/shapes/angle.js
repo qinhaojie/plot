@@ -9,6 +9,7 @@ class Angle extends Line {
             throw new Error('只能传入三个点组成一个角');
         }
         super(...arguments);
+        this.name = 'angle';
     }
 
     getData() {
@@ -24,7 +25,8 @@ class Angle extends Line {
     buildDom() {
         super.buildDom();
         this.tip = this.group
-            .append('g');
+            .append('g')
+            .style('pointer-events','none');
         this.angleArc = this.tip.append('path')
         .attr('id','text'+this.id)
         .attr('stroke', '#000');

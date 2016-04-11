@@ -6,6 +6,8 @@ class Polygon extends Line {
     constructor(chart, options) {
         options.color = '#ccc';
         super(...arguments);
+        
+        this.name = 'polygon';
     }
 
     getData() {
@@ -16,18 +18,6 @@ class Polygon extends Line {
         }
         path += 'z';
         return path;
-    }
-
-    buildDom() {
-        super.buildDom();
-        //将多边形节点放在第一个点之前
-        var g = document.getElementById(this.id);
-        var point = this.points[0];
-        
-        if (point) {
-            var p = document.getElementById(point.id);
-            p.parentElement.insertBefore(g,p)
-        }
     }
 }
 

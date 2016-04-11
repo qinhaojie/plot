@@ -20,7 +20,8 @@ class Func extends Base {
         this.dy = 0;
         this.lastdx = 0;
         this.lastdy = 0;
-
+        
+        this.name = 'func';
 
     }
 

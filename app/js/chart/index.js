@@ -1,6 +1,6 @@
 import events from 'events';
 import * as shape from './shape/index.js';
-
+import Ralation from './relation/index.js';
 var isPc = document.body.ontouchstart === undefined;
 var event = {
     down: isPc ? 'mousedown' : 'touchstart',
@@ -55,6 +55,7 @@ class Chart extends events {
         this.setMaxListeners(0);
 
         this.init();
+        this.raltion = new Ralation(this)
         this.translateContent(content);
     }
 
@@ -236,17 +237,22 @@ class Chart extends events {
         this.on('_' + event.down, function(ctrl) {
             this.lastTarget = this.focusTarget;
             this.focusTarget = this.activeTarget;
-            this.dragStart = true;
+            this.dragStart = false;
             this.dragStartPoint = this.getMouse();
 
-            this.lastTarget && this.lastTarget.blur()
+            if (this.mode.indexOf('relation') < 0) {
+
+                this.lastTarget && this.lastTarget.blur()
+            }
 
             //选择到一个目标时候禁止缩放
             if (this.mode == 'move' && this.focusTarget) {
                 this.setMode('_move');
+                this.dragStart = true;
             }
-            if (this.activeTarget) {
+            if (this.focusTarget) {
                 ctrl.emit = false;
+                this.emit('choose', this.focusTarget)
             }
         })
 
@@ -255,19 +261,37 @@ class Chart extends events {
             if (!this.dragStart) {
                 var target = this.getSelect(this.getMouse());
 
-                if (target && target !== this.activeTarget) {
-                    this.activeTarget && this.activeTarget.blur();
-                    target.focus();
-                    this.activeTarget = target;
-                }
-                if (!target && this.activeTarget) {
-                    this.activeTarget.blur();
-                    this.activeTarget = null;
+                //关系模式
+                if (this.mode.indexOf('relation') > -1) {
+
+                    if (!target && this.activeTarget) {
+                        console.log(target, this.activeTarget)
+                        this.emit('hoverout', this.activeTarget);
+                        this.activeTarget = null;
+                    } else if (target && target != this.activeTarget) {
+                        this.activeTarget && this.emit('hoverout', this.activeTarget);
+                        this.emit('hover', target);
+                        this.activeTarget = target;
+                    } else {
+                        this.activeTarget = target;
+                        target && this.emit('hover', target);
+                    }
+
+                } else {
+                    if (target && target !== this.activeTarget) {
+                        this.activeTarget && this.activeTarget.blur();
+                        target.focus();
+                        this.activeTarget = target;
+                    }
+                    if (!target && this.activeTarget) {
+                        this.activeTarget.blur();
+                        this.activeTarget = null;
+                    }
                 }
             }
 
 
-            if (this.focusTarget) {
+            if (this.focusTarget && this.mode == '_move') {
                 this.focusTarget.focus();
                 this.dragStart && this.emit('dragtarget', this.focusTarget)
             }
@@ -277,11 +301,12 @@ class Chart extends events {
 
         this.on('_' + event.up, function(ctrl) {
 
-            this.dragStart = false;
+
             if (this.mode == '_move') {
                 this.setMode('move');
             }
-            this.emit('dragtargetend', this.focusTarget);
+            this.dragStart && this.emit('dragtargetend', this.focusTarget);
+            this.dragStart = false;
 
         });
 
@@ -335,7 +360,7 @@ class Chart extends events {
 
     add(type, config) {
         if (this.mode != 'add') return;
-        var ret =  this._add(type,config);
+        var ret = this._add(type, config);
         this.lastTarget && this.lastTarget.blur();
         this.activeTarget = this.focusTarget = ret;
         ret.focus();
@@ -349,12 +374,21 @@ class Chart extends events {
         }
         var n = new shape[type](this, config, true)
         this.content[type].push(n);
-        
+
         return n;
     }
 
     getMouse() {
         return d3.mouse(this.graph[0][0]);
+    }
+
+    blurAll() {
+        Object.keys(this.content).forEach(name => {
+            this.content[name].forEach(shape => {
+                shape.blur()
+            })
+        });
+        this.activeTarget = this.focusTarget = this.lastTarget = null;
     }
 }
 

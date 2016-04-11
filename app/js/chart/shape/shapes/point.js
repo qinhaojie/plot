@@ -20,7 +20,9 @@ class Point extends Base {
         this.r = r;
         this.stroke = stroke;
         this.buildDom();
-
+        
+        this.name = 'point';
+        
         if (autoDraw) {
             this.draw();
         }
@@ -71,10 +73,11 @@ class Point extends Base {
             .append('text')
             .attr('dx', 3)
             .attr('dy', -3)
+            .style('pointer-events','none')
 
         this.proxyDom = this.group
             .append('circle')
-            // .attr("class", className)
+            .attr("class", this.proxyClassName)
             .attr('r', this.r + 5)
             .attr('fill', 'rgba(0,0,0,0)')
             .attr('stroke', 'rgba(0,0,0,0)')
