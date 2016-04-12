@@ -112,7 +112,6 @@ class Point extends Base {
     moveEnd() {
         this.lastCoordinate[0] = this.coordinate[0];
         this.lastCoordinate[1] = this.coordinate[1];
-
         this.emit('moveend');
 
     }

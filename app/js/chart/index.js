@@ -1,6 +1,6 @@
 import events from 'events';
 import * as shape from './shape/index.js';
-import Ralation from './relation/index.js';
+import RelationManager from './relation/manager.js';
 var isPc = document.body.ontouchstart === undefined;
 var event = {
     down: isPc ? 'mousedown' : 'touchstart',
@@ -55,7 +55,7 @@ class Chart extends events {
         this.setMaxListeners(0);
 
         this.init();
-        this.raltion = new Ralation(this)
+      //  this.relationManager = new RelationManager(this)
         this.translateContent(content);
     }
 
@@ -239,7 +239,6 @@ class Chart extends events {
             this.focusTarget = this.activeTarget;
             this.dragStart = false;
             this.dragStartPoint = this.getMouse();
-
             if (this.mode.indexOf('relation') < 0) {
 
                 this.lastTarget && this.lastTarget.blur()
@@ -252,12 +251,13 @@ class Chart extends events {
             }
             if (this.focusTarget) {
                 ctrl.emit = false;
+                // this.focusTarget.focus();
                 this.emit('choose', this.focusTarget)
             }
         })
 
         this.on('_' + event.move, function(ctrl) {
-
+          
             if (!this.dragStart) {
                 var target = this.getSelect(this.getMouse());
 
@@ -265,7 +265,6 @@ class Chart extends events {
                 if (this.mode.indexOf('relation') > -1) {
 
                     if (!target && this.activeTarget) {
-                        console.log(target, this.activeTarget)
                         this.emit('hoverout', this.activeTarget);
                         this.activeTarget = null;
                     } else if (target && target != this.activeTarget) {
@@ -287,6 +286,7 @@ class Chart extends events {
                         this.activeTarget.blur();
                         this.activeTarget = null;
                     }
+
                 }
             }
 
@@ -302,11 +302,11 @@ class Chart extends events {
         this.on('_' + event.up, function(ctrl) {
 
 
+            this.dragStart && this.emit('dragtargetend', this.focusTarget);
+            this.dragStart = false;
             if (this.mode == '_move') {
                 this.setMode('move');
             }
-            this.dragStart && this.emit('dragtargetend', this.focusTarget);
-            this.dragStart = false;
 
         });
 
@@ -356,6 +356,10 @@ class Chart extends events {
             this.zoom.x(d3.scale.linear()).y(d3.scale.linear());
         }
         this.mode = mode;
+        if (mode != '_move') {
+            this.blurAll();
+        }
+        this.emit('modechange', mode);
     }
 
     add(type, config) {

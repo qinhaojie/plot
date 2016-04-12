@@ -87,19 +87,15 @@ a.on('touchstart', function (e,[x,y]) {
 var box = `
     <div id="box">
     <select name="a" id="limit">
-        <option value="0">启用缩放</option>
-        <option value="1">禁止缩放</option>
+        <option value="move">启用缩放</option>
+        <option value="add">禁止缩放</option>
+        <option value="relation.verticalLine">垂线</option>
     </select>
 </div>
 `
 $('body').append(box)
 $('#limit').on('change',function(){
 
-    a.setMode(this.value == '1' ? 'add' : 'move');
+    a.setMode(this.value );
 })
 
-a.on('a',function(e){
-    console.log(e)
-    return false
-})
-console.log(a.emit('a'))
