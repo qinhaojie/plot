@@ -55,7 +55,7 @@ class Chart extends events {
         this.setMaxListeners(0);
 
         this.init();
-      //  this.relationManager = new RelationManager(this)
+        this.relationManager = new RelationManager(this);
         this.translateContent(content);
     }
 

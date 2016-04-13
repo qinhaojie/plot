@@ -18,6 +18,8 @@ class Base extends events {
         this.graph = chart.graph;
         this.width = chart.layout.w;
         this.height = chart.layout.h;
+        
+        this.relations =[];
 
         chart.on('draw', this.draw.bind(this))
 
@@ -78,6 +80,10 @@ class Base extends events {
     }
     get proxyPathWidth(){
         return 8;
+    }
+    
+    addRelation(relation){
+        this.relations.push(relation);
     }
 }
 

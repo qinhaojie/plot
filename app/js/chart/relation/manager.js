@@ -75,6 +75,7 @@ class Manager {
             this.relations[name] = [];
         }
         this.relations[name].push(relation);
+        console.log(name,this.relations)
     }
 
     startRelation(type) {

@@ -29,6 +29,7 @@ class Line extends Base {
 
             point.on('move', function() {
                 this.draw();
+                this.emit('move');
             }.bind(this))
 
             this.points.push(point);
