@@ -402,11 +402,7 @@ class Chart extends events {
         }
         var n = new shape[type](this, config, true)
         this.content[type].push(n);
-        console.log(this.shapeMap)
         this.shapeMap[n.id] = n;
-        // setTimeout(()=>{
-        //     this.removeShape(n)
-        // },1000);
         return n;
     }
 
