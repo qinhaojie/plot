@@ -77,10 +77,6 @@ class Manager {
         this.relations[name].push(relation);
         console.log(name, this.relations)
         console.log(this.relations[name])
-        setTimeout(()=>{
-            this.removeRelation(relation)
-            console.log(this.relations[name])
-        },2000)
     }
 
     startRelation(type) {
