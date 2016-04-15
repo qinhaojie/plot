@@ -1,6 +1,7 @@
 import Base from '../base.js';
 import util from '../../util.js';
 import Point from './point.js';
+import Segment from './segment.js';
 const className = 'line shape-line';
 class Line extends Base {
 
@@ -14,11 +15,12 @@ class Line extends Base {
             stroke = '#666'
         } = {},
         autoDraw = false) {
-        super(chart);
+        super(...arguments);
 
         this.points = [];
+        let i = 0;
         for (let point of data) {
-
+            
             if (!point.coordinate) {
 
                 point = chart._add('point', {
@@ -31,8 +33,17 @@ class Line extends Base {
                 this.draw();
                 this.emit('move');
             }.bind(this))
-
+            
             this.points.push(point);
+            if(i>0){
+                let segment = chart._add('segment', {
+                    data: [
+                        this.points[i-1],
+                        point
+                    ]
+                })
+            }
+            i++;
         }
 
         this.color = color;
@@ -51,12 +62,12 @@ class Line extends Base {
 
     draw() {
 
-        var path = this.getData();
+        //var path = this.getData();
 
-        this.dom
-            .attr('d', path)
-        this.proxyDom
-            .attr('d', path);
+        // this.dom
+        //     .attr('d', path)
+        // this.proxyDom
+        //     .attr('d', path);
         super.draw();
     }
 
@@ -82,7 +93,7 @@ class Line extends Base {
         })
     }
 
-    buildDom() {
+    buildDom1() {
 
         if (this.dom) return;
         super.buildDom();
@@ -101,6 +112,8 @@ class Line extends Base {
             .style('fill', this.color)
             .attr('stroke', this.stroke)
 
+            .attr('fill', 'none')
+            .attr('stroke', 'rgba(0,0,0,0)');
         this.tip = this.group
             .append('text')
             .attr('dx', 3)

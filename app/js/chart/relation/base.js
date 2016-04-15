@@ -95,7 +95,7 @@ class Relation {
         this.buildDom();
         this.bindEvent();
         this.draw();
-        this.manager.endCurrentRelation()
+        this.manager.endCurrentRelation();
     }
 
     draw() {
@@ -109,11 +109,28 @@ class Relation {
     }
     
     bindEvent(){
+        var that = this;
+        this.drawCall = function () {
+            return that.draw(...arguments);
+        }
         for(let name of this.shapeNames){
             this.shapes[name].forEach(shape =>{
-                shape.on('move',this.draw.bind(this))
+                //shape.on('move',this.draw.bind(this))
+                shape.on('draw',this.drawCall)
             })
         }
+    }
+    
+    destroy(){
+        this.group.remove();
+        for(let name of this.shapeNames){
+            this.shapes[name].forEach(shape =>{
+                shape.removeListener('draw',this.drawCall);
+                shape.removeRelation(this);
+            })
+        }
+        this.manager.removeRelationRef(this);
+        this.shapes = null;
     }
 }
 

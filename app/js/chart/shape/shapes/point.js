@@ -12,7 +12,7 @@ class Point extends Base {
             stroke = '#666'
         } = {},
         autoDraw = false) {
-        super(chart);
+        super(...arguments);
 
         this.coordinate = data;
         this.lastCoordinate = [data[0], data[1]];

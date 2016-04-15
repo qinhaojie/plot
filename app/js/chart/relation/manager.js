@@ -22,7 +22,7 @@ import * as relations from './index.js';
 class Manager {
     constructor(chart) {
         this.chart = chart;
-        
+
 
         /**
          * 存储关系
@@ -60,7 +60,7 @@ class Manager {
         chart.on('modechange', mode => {
             if (mode.indexOf('relation.') < 0) {
                 this.stopRelation()
-            }else{
+            } else {
                 let type = mode.split('.')[1];
                 this.relationType = type;
                 this.startRelation(type);
@@ -71,30 +71,47 @@ class Manager {
 
     addRelation(relation) {
         var name = relation.name;
-        if(!this.relations[name]){
+        if (!this.relations[name]) {
             this.relations[name] = [];
         }
         this.relations[name].push(relation);
-        console.log(name,this.relations)
+        console.log(name, this.relations)
+        console.log(this.relations[name])
+        setTimeout(()=>{
+            this.removeRelation(relation)
+            console.log(this.relations[name])
+        },2000)
     }
 
     startRelation(type) {
         this.start = true;
-       
+
         this.currentRelation = new relations[type](this);
     }
-    
-    stopRelation(){
+
+    stopRelation() {
         this.start = false;
         this.currentRelation = null;
-        
+
     }
 
     endCurrentRelation() {
-        
+
         this.addRelation(this.currentRelation);
         this.currentRelation = new relations[this.relationType](this);
         this.chart.blurAll();
+    }
+
+    removeRelation(relation) {
+        relation.destroy();
+    }
+    
+    removeRelationRef(r){
+        var name = r.name;
+        var i = this.relations[name].indexOf(r);
+        if(i>-1){
+            this.relations[name].splice(i,1);
+        }
     }
 }
 

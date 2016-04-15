@@ -11,7 +11,7 @@ class Func extends Base {
             },
             color = '#000'
         } = {}) {
-        super(chart);
+        super(...arguments);
 
         this.fun = data;
         this.color = color;

@@ -17,6 +17,17 @@ class Chart extends events {
         yAxes = {
             domain: [-5, 5]
         },
+        /**
+         * content = {
+         *  straight:[
+         *      {
+         *          data:[p0,p1],
+         *          color:String,
+         *          id:String    
+         *      }
+         *  ]  
+         * }
+         */
         content = {},
 
     } = {},
@@ -53,10 +64,18 @@ class Chart extends events {
 
         //取消对监听器数量的限制
         this.setMaxListeners(0);
-
+        
+         /**
+         * 形状的索引
+         * 键值为形状id
+         */
+        this.shapeMap = {};
+        
         this.init();
         this.relationManager = new RelationManager(this);
         this.translateContent(content);
+        
+       
     }
 
     //初始化画布
@@ -94,11 +113,14 @@ class Chart extends events {
         this.content = {};
         Object.keys(content).forEach((name, i) => {
 
-            this.content[name] = content[name].map(item => {
-                return new shape[name](this, item);
-            });
+            // this.content[name] = content[name].map(item => {
+            //     return new shape[name](this, item);
+            // });
+            content[name].forEach((config)=>{
+                this._add(name,config);
+            })
         })
-        window.c = this.content.point;
+        window.c = this.content;
 
 
     }
@@ -161,6 +183,7 @@ class Chart extends events {
             .attr('y1', (d, i) => {
                 return that.scaleY(d)
             })
+            
             .attr('y2', (d, i) => {
                 return that.scaleY(d)
             })
@@ -368,6 +391,7 @@ class Chart extends events {
         this.lastTarget && this.lastTarget.blur();
         this.activeTarget = this.focusTarget = ret;
         ret.focus();
+       
         return ret;
 
     }
@@ -378,7 +402,11 @@ class Chart extends events {
         }
         var n = new shape[type](this, config, true)
         this.content[type].push(n);
-
+        console.log(this.shapeMap)
+        this.shapeMap[n.id] = n;
+        // setTimeout(()=>{
+        //     this.removeShape(n)
+        // },1000);
         return n;
     }
 
@@ -393,6 +421,19 @@ class Chart extends events {
             })
         });
         this.activeTarget = this.focusTarget = this.lastTarget = null;
+    }
+    
+    removeShape(shape){
+        shape.destroy();
+    }
+    
+    removeShapeRef(shape){
+        var name = shape.name;
+        var i = this.content[name].indexOf(shape);
+        if(i>-1){
+            this.content[name].splice(i,1);
+            delete this.shapeMap[shape.id]
+        }
     }
 }
 
