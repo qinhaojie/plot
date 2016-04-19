@@ -1,5 +1,5 @@
 import Base from '../base.js';
-import util from '../../util.js';
+import util from '../../../util.js';
 import Point from './point.js';
 
 const className = 'line shape-segment';

@@ -1,5 +1,5 @@
 import events from 'events';
-import util from "../util.js";
+import util from "../../util.js";
 
 const gClassName = 'shape';
 class Base extends events {

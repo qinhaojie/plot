@@ -1,5 +1,5 @@
 import Base from '../base.js';
-import util from '../../util.js'
+import util from '../../../util.js'
 const className = 'circle shape-point';
 class Point extends Base {
 

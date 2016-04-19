@@ -4,7 +4,7 @@ import line from './shapes/line.js';
 import polygon from './shapes/polygon.js';
 import angle from './shapes/angle.js';
 import segment from './shapes/segment.js';
-import straight from './/shapes/straight.js';
+import straight from './shapes/straight.js';
 
 export {
     func,

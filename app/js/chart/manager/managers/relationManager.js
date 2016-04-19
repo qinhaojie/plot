@@ -17,7 +17,7 @@
  * 
  * 
  */
-import * as relations from './../../relation/index.js';
+import * as relations from '../../element/relation/index.js';
 import Manager from '../manager.js';
 class rManager extends Manager{
     constructor(chart) {

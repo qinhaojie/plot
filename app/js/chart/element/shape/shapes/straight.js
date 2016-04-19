@@ -1,5 +1,5 @@
 import Segment from './segment.js';
-import util from '../../util.js';
+import util from '../../../util.js';
 
 class Straight extends Segment {
     constructor(chart, options) {

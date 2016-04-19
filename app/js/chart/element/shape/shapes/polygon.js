@@ -1,5 +1,5 @@
 import Line from './line.js';
-import util from '../../util.js';
+import util from '../../../util.js';
 
 
 class Polygon extends Line {

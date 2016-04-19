@@ -1,5 +1,5 @@
 import events from 'events';
-import * as shape from './shape/index.js';
+import * as shape from './element/shape/index.js';
 import RelationManager from './manager/managers/relationManager.js';
 var isPc = document.body.ontouchstart === undefined;
 var event = {
