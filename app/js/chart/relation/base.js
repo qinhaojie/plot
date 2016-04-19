@@ -95,7 +95,7 @@ class Relation {
         this.buildDom();
         this.bindEvent();
         this.draw();
-        this.manager.endCurrentRelation();
+        this.manager.endCurrentElement();
     }
 
     draw() {
@@ -129,7 +129,7 @@ class Relation {
                 shape.removeRelation(this);
             })
         }
-        this.manager.removeRelationRef(this);
+        this.manager.removeElementRef(this);
         this.shapes = null;
     }
 }

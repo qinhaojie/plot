@@ -17,7 +17,7 @@
  * 
  * 
  */
-import * as relations from './index.js';
+import * as relations from './../../relation/index.js';
 
 class Manager {
     constructor(chart) {
@@ -59,52 +59,52 @@ class Manager {
 
         chart.on('modechange', mode => {
             if (mode.indexOf('relation.') < 0) {
-                this.stopRelation()
+                this.stopElement()
             } else {
                 let type = mode.split('.')[1];
                 this.relationType = type;
-                this.startRelation(type);
+                this.startElement(type);
             }
         })
 
     }
 
-    addRelation(relation) {
-        var name = relation.name;
+    addElement(element) {
+        var name = element.name;
         if (!this.relations[name]) {
             this.relations[name] = [];
         }
-        this.relations[name].push(relation);
+        this.relations[name].push(element);
         console.log(name, this.relations)
         console.log(this.relations[name])
     }
 
-    startRelation(type) {
+    startElement(type) {
         this.start = true;
 
         this.currentRelation = new relations[type](this);
     }
 
-    stopRelation() {
+    stopElement() {
         this.start = false;
         this.currentRelation = null;
 
     }
 
-    endCurrentRelation() {
+    endCurrentElement() {
 
-        this.addRelation(this.currentRelation);
+        this.addElement(this.currentRelation);
         this.currentRelation = new relations[this.relationType](this);
         this.chart.blurAll();
     }
 
-    removeRelation(relation) {
-        relation.destroy();
+    removeElement(element) {
+        element.destroy();
     }
     
-    removeRelationRef(r){
-        var name = r.name;
-        var i = this.relations[name].indexOf(r);
+    removeElementRef(element){
+        var name = element.name;
+        var i = this.relations[name].indexOf(element);
         if(i>-1){
             this.relations[name].splice(i,1);
         }

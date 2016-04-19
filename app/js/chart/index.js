@@ -1,6 +1,6 @@
 import events from 'events';
 import * as shape from './shape/index.js';
-import RelationManager from './relation/manager.js';
+import RelationManager from './manager/managers/relationManager.js';
 var isPc = document.body.ontouchstart === undefined;
 var event = {
     down: isPc ? 'mousedown' : 'touchstart',
