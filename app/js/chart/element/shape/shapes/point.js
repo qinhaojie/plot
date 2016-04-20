@@ -3,7 +3,7 @@ import util from '../../../util.js'
 const className = 'circle shape-point';
 class Point extends Base {
 
-    constructor(chart,
+    constructor(manager,
         {
             //坐标系坐标，客户端坐标需要在传之前转换
             data = [],

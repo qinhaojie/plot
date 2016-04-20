@@ -28,27 +28,7 @@ class rManager extends Manager{
 
     bindEvent(){
 
-        this.chart.on('choose', shape => {
-            if (!this.start) return;
-            if (this.chart.mode.indexOf('relation') > -1) {
-
-                this.currentElement.addShape(shape)
-            }
-        });
-
-        this.chart.on('hover', shape => {
-            if (!this.start) return;
-            if (this.currentElement.shapeInNecessary(shape) && !this.currentElement.shapeInAdded(shape)) {
-                shape.focus()
-            }
-        });
-        this.chart.on('hoverout', shape => {
-            if (!this.start) return;
-            if (!this.currentElement.shapeInAdded(shape)) {
-                shape.blur();
-            }
-        });
-
+        super.bindEvent();
         this.chart.on('modechange', mode => {
             if (mode.indexOf('relation.') < 0) {
                 this.stopElement()
@@ -57,7 +37,14 @@ class rManager extends Manager{
                 this.typeName = type;
                 this.startElement(type);
             }
-        })
+        });
+        this.chart.on('choose', shape => {
+            if (!this.start) return;
+            if (this.chart.mode.indexOf('relation') > -1) {
+
+                this.currentElement.addShape(shape)
+            }
+        });
     }
 }
 

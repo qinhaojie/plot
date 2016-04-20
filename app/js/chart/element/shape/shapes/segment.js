@@ -4,36 +4,30 @@ import Point from './point.js';
 
 const className = 'line shape-segment';
 class Segment extends Base {
-     constructor(chart,
+    constructor(manager,
         {
             //Point实例
-            data = [
-            ],
+            data = [],
             color = 'none',
             r = 3,
             stroke = '#666'
         } = {},
-        autoDraw = false) {
+                autoDraw = false) {
         super(...arguments);
-        
+
         this.points = [];
-        if(data.length !=2){
-            throw new Error('线段只能由2个点组成');
-        }
+
         for (let point of data) {
 
             if (!point.coordinate) {
 
-                point = chart._add('point', {
+                point = manager.addByConfig('point', {
                     data: point
                 })
             }
 
 
-            point.on('move', function() {
-                this.draw();
-                this.emit('move');
-            }.bind(this))
+
 
             this.points.push(point);
         }
@@ -41,15 +35,26 @@ class Segment extends Base {
         this.color = color;
         this.r = r;
         this.stroke = stroke;
+
+        this.shapes = {
+            point: []
+        }
+        this.necessaryShape = {
+            point: 2
+        }
+        this.shapeNames = Object.keys(this.shapes)
+
+
         this.buildDom();
-        
+
         this.name = 'segment';
-        
+
         if (autoDraw) {
             this.draw();
+            this.bindEvent();
         }
 
-        
+
     }
 
     draw() {
@@ -80,9 +85,18 @@ class Segment extends Base {
      * @return [Array] [[x1,y1],[x2,y2]]
      */
     getPoints() {
-        return this.points.map(function(point) {
+        return this.points.map(function (point) {
             return point.getData();
         })
+    }
+
+    bindEvent(){
+        this.points.forEach(point=>{
+            point.on('move', function () {
+                this.draw();
+                this.emit('move');
+            }.bind(this))
+        });
     }
 
     buildDom() {
@@ -93,10 +107,10 @@ class Segment extends Base {
         //path节点放在第一个点之前
         var g = document.getElementById(this.id);
         var point = this.points[0];
-        
+
         if (point) {
             var p = document.getElementById(point.id);
-            p.parentElement.insertBefore(g,p)
+            p.parentElement.insertBefore(g, p)
         }
         this.dom = this.group
             .append('path')
@@ -116,7 +130,7 @@ class Segment extends Base {
 
             .attr('fill', 'none')
             .attr('stroke', 'rgba(0,0,0,0)');
-            
+
     }
 
     move([dx, dy]) {
@@ -131,10 +145,18 @@ class Segment extends Base {
             point.moveEnd();
         }
     }
-    
+
     get k() {
         var [p1, p2] = this.getPoints();
         return (p1[1] - p2[1]) / (p1[0] - p2[0]);
+    }
+
+    addShape(shape){
+        if (!this.shapeInNecessary(shape) || this.shapeInAdded(shape)) return false;
+        super.addShape(shape);
+        this.points.push(shape);
+
+        this.checkEnd();
     }
 
 

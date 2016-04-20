@@ -5,7 +5,7 @@ import Segment from './segment.js';
 const className = 'line shape-line';
 class Line extends Base {
 
-    constructor(chart,
+    constructor(manager,
         {
             //Point实例
             data = [
@@ -23,20 +23,17 @@ class Line extends Base {
             
             if (!point.coordinate) {
 
-                point = chart._add('point', {
+                point = manager.addByConfig('point', {
                     data: point
                 })
             }
 
 
-            point.on('move', function() {
-                this.draw();
-                this.emit('move');
-            }.bind(this))
+
             
             this.points.push(point);
             if(i>0){
-                let segment = chart._add('segment', {
+                let segment = manager.addByConfig('segment', {
                     data: [
                         this.points[i-1],
                         point
@@ -52,6 +49,14 @@ class Line extends Base {
         this.buildDom();
         
         this.name = 'line';
+        
+        this.shapes = {
+            point: []
+        }
+        this.necessaryShape = {
+            point: Infinity
+        }
+        this.shapeNames = Object.keys(this.shapes)
         
         if (autoDraw) {
             this.draw();
@@ -93,41 +98,6 @@ class Line extends Base {
         })
     }
 
-    buildDom1() {
-
-        if (this.dom) return;
-        super.buildDom();
-
-        //path节点放在第一个点之前
-        var g = document.getElementById(this.id);
-        var point = this.points[0];
-        
-        if (point) {
-            var p = document.getElementById(point.id);
-            p.parentElement.insertBefore(g,p)
-        }
-        this.dom = this.group
-            .append('path')
-            .attr("class", className)
-            .style('fill', this.color)
-            .attr('stroke', this.stroke)
-
-            .attr('fill', 'none')
-            .attr('stroke', 'rgba(0,0,0,0)');
-        this.tip = this.group
-            .append('text')
-            .attr('dx', 3)
-            .attr('dy', -3)
-
-        this.proxyDom = this.group
-            .append('path')
-            .attr("class", this.proxyClassName)
-            .attr('stroke-width', this.proxyPathWidth)
-
-            .attr('fill', 'none')
-            .attr('stroke', 'rgba(0,0,0,0)');
-            
-    }
 
     move([dx, dy]) {
         for (let point of this.points) {
@@ -142,6 +112,26 @@ class Line extends Base {
         }
     }
 
+    addShape(shape){
+        if (!this.shapeInNecessary(shape) || this.shapeInAdded(shape)) return false;
+        super.addShape(shape);
+        this.points.push(shape);
+
+        this.checkEnd();
+    }
+
+    bindEvent(){
+        this.points.forEach(point=>{
+            point.on('move', function () {
+                this.draw();
+                this.emit('move');
+            }.bind(this))
+        });
+    }
+
+    end(){
+        super.end();
+    }
 
 }
 

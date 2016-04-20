@@ -3,18 +3,18 @@ import util from '../../../util.js';
 
 
 class Polygon extends Line {
-    constructor(chart, options) {
+    constructor(manager, options={}) {
         options.color = '#ccc';
         super(...arguments);
 
         this.name = 'polygon';
 
-        let segment = chart._add('segment', {
-            data: [
-                this.points[this.points.length-1],
-                this.points[0]
-            ]
-        })
+        // let segment = manager.addByConfig('segment', {
+        //     data: [
+        //         this.points[this.points.length-1],
+        //         this.points[0]
+        //     ]
+        // })
     }
 
     // getData() {

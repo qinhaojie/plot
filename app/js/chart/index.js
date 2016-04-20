@@ -1,6 +1,6 @@
 import events from 'events';
 import * as shape from './element/shape/index.js';
-import RelationManager from './manager/managers/relationManager.js';
+import * as manager from './manager/index.js';
 var isPc = document.body.ontouchstart === undefined;
 var event = {
     down: isPc ? 'mousedown' : 'touchstart',
@@ -38,11 +38,11 @@ class Chart extends events {
 
         this.container = container;
         var margin = {
-            top: 20,
-            right: 40,
-            bottom: 20,
-            left: 40
-        },
+                top: 20,
+                right: 40,
+                bottom: 20,
+                left: 40
+            },
             width = container.clientWidth - margin.left - margin.right,
             height = container.clientHeight - margin.top - margin.bottom;
         this.layout = {
@@ -64,18 +64,20 @@ class Chart extends events {
 
         //取消对监听器数量的限制
         this.setMaxListeners(0);
-        
-         /**
+
+        /**
          * 形状的索引
          * 键值为形状id
          */
         this.shapeMap = {};
-        
+
         this.init();
-        this.relationManager = new RelationManager(this);
+        this.relationManager = new manager.relationManager(this);
+        this.shapeManager = new manager.shapeManager(this);
+        this.content = this.shapeManager.elements;
         this.translateContent(content);
-        
-       
+
+
     }
 
     //初始化画布
@@ -110,14 +112,14 @@ class Chart extends events {
     }
 
     translateContent(content) {
-        this.content = {};
+
         Object.keys(content).forEach((name, i) => {
 
             // this.content[name] = content[name].map(item => {
             //     return new shape[name](this, item);
             // });
-            content[name].forEach((config)=>{
-                this._add(name,config);
+            content[name].forEach((config)=> {
+                this._add(name, config);
             })
         })
         window.c = this.content;
@@ -173,7 +175,7 @@ class Chart extends events {
             })
             .attr('y1', that.layout.h)
             .attr('y2', 0)
-            .attr('value', function(d) {
+            .attr('value', function (d) {
                 return d;
             })
 
@@ -183,13 +185,13 @@ class Chart extends events {
             .attr('y1', (d, i) => {
                 return that.scaleY(d)
             })
-            
+
             .attr('y2', (d, i) => {
                 return that.scaleY(d)
             })
             .attr('x1', that.layout.w)
             .attr('x2', 0)
-            .attr('value', function(d) {
+            .attr('value', function (d) {
                 return d;
             })
 
@@ -213,7 +215,7 @@ class Chart extends events {
         zoom.x(this.scaleX)
             .y(this.scaleY)
 
-            .on('zoom', function() {
+            .on('zoom', function () {
 
                 if (that.mode != 'move') {
                     //zoom.x(tempScale).y(tempScale)
@@ -239,7 +241,7 @@ class Chart extends events {
 
         for (let e of Object.keys(event)) {
 
-            d3.select(this.container).on(event[e], function() {
+            d3.select(this.container).on(event[e], function () {
 
                 let controller = {
                     emit: true
@@ -257,7 +259,7 @@ class Chart extends events {
         }
 
 
-        this.on('_' + event.down, function(ctrl) {
+        this.on('_' + event.down, function (ctrl) {
             this.lastTarget = this.focusTarget;
             this.focusTarget = this.activeTarget;
             this.dragStart = false;
@@ -276,16 +278,22 @@ class Chart extends events {
                 ctrl.emit = false;
                 // this.focusTarget.focus();
                 this.emit('choose', this.focusTarget)
+            } else {
+                var [x,y] = this.getMouse();
+                this.emit('clickBlank', [
+                    this.scaleX.invert(x),
+                    this.scaleY.invert(y)
+                ]);
             }
         })
 
-        this.on('_' + event.move, function(ctrl) {
-          
+        this.on('_' + event.move, function (ctrl) {
+
             if (!this.dragStart) {
                 var target = this.getSelect(this.getMouse());
 
                 //关系模式
-                if (this.mode.indexOf('relation') > -1) {
+                if (this.mode.indexOf('relation') > -1 || this.mode.indexOf('addElement') > -1) {
 
                     if (!target && this.activeTarget) {
                         this.emit('hoverout', this.activeTarget);
@@ -322,7 +330,7 @@ class Chart extends events {
 
         });
 
-        this.on('_' + event.up, function(ctrl) {
+        this.on('_' + event.up, function (ctrl) {
 
 
             this.dragStart && this.emit('dragtargetend', this.focusTarget);
@@ -333,13 +341,13 @@ class Chart extends events {
 
         });
 
-        this.on('dragtarget', function(target) {
+        this.on('dragtarget', function (target) {
             var c = this.getMouse();
             var [x, y] = this.dragStartPoint;
             target.move([c[0] - x, c[1] - y])
         });
 
-        this.on('dragtargetend', function(target) {
+        this.on('dragtargetend', function (target) {
             if (target) {
                 target.moveEnd();
             }
@@ -372,7 +380,7 @@ class Chart extends events {
     }
 
     setMode(mode) {
-
+        var last = this.mode;
         if (mode == 'move') {
             this.zoom.x(this.scaleX).y(this.scaleY);
         } else {
@@ -381,8 +389,13 @@ class Chart extends events {
         this.mode = mode;
         if (mode != '_move') {
             this.blurAll();
+
         }
-        this.emit('modechange', mode);
+        if (!((last == '_move' && mode == 'move') || (last == 'move' && mode == '_move'))) {
+            this.emit('modechange', mode);
+        }
+
+
     }
 
     add(type, config) {
@@ -391,7 +404,7 @@ class Chart extends events {
         this.lastTarget && this.lastTarget.blur();
         this.activeTarget = this.focusTarget = ret;
         ret.focus();
-       
+
         return ret;
 
     }
@@ -400,8 +413,8 @@ class Chart extends events {
         if (!this.content[type]) {
             this.content[type] = [];
         }
-        var n = new shape[type](this, config, true)
-        this.content[type].push(n);
+        var n = this.shapeManager.addByConfig(type, config);
+        console.log(this.content)
         this.shapeMap[n.id] = n;
         return n;
     }
@@ -418,16 +431,16 @@ class Chart extends events {
         });
         this.activeTarget = this.focusTarget = this.lastTarget = null;
     }
-    
-    removeShape(shape){
+
+    removeShape(shape) {
         shape.destroy();
     }
-    
-    removeShapeRef(shape){
+
+    removeShapeRef(shape) {
         var name = shape.name;
         var i = this.content[name].indexOf(shape);
-        if(i>-1){
-            this.content[name].splice(i,1);
+        if (i > -1) {
+            this.content[name].splice(i, 1);
             delete this.shapeMap[shape.id]
         }
     }

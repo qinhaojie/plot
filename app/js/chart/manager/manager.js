@@ -30,6 +30,19 @@ class Manager {
 
     bindEvent(){
         
+
+        this.chart.on('hover', shape => {
+            if (!this.start) return;
+            if (this.currentElement.shapeInNecessary(shape) && !this.currentElement.shapeInAdded(shape)) {
+                shape.focus()
+            }
+        });
+        this.chart.on('hoverout', shape => {
+            if (!this.start) return;
+            if (!this.currentElement.shapeInAdded(shape)) {
+                shape.blur();
+            }
+        });
     }
     
     addElement(element) {
@@ -38,8 +51,7 @@ class Manager {
             this.elements[name] = [];
         }
         this.elements[name].push(element);
-        console.log(name, this.elements)
-        console.log(this.elements[name])
+        
     }
 
     startElement(type) {
@@ -50,6 +62,7 @@ class Manager {
 
     stopElement() {
         this.start = false;
+        this.currentElement&&this.currentElement.destroy();
         this.currentElement = null;
 
     }

@@ -30,41 +30,41 @@ var a = new Chart({
         //         data: [1, 0]
         //     }
         // ],
-        straight:[
-            {
-                data:[
-                    [1,1],
-                    [3,1],
-                    
-                   
-                ],
-                id:'213123'
-            }
-        ],
-        polygon:[
-            {
-                data:[
-                    [0,1],
-                    [1.5,1.5],
-                    [-1,1.3],
-                    [-2,0]
-                ]
-            }
-        ],
-        angle:[
-            {
-                data:[
-                    [-2.0,1.1],
-                    [1.2,1.2],
-                    [1.1,0]
-                ]
-            }
-        ]
+        // straight: [
+        //     {
+        //         data: [
+        //             [1, 1],
+        //             [3, 1],
+        //
+        //
+        //         ],
+        //         id: '213123'
+        //     }
+        // ],
+        // polygon: [
+        //     {
+        //         data: [
+        //             [0, 1],
+        //             [1.5, 1.5],
+        //             [-1, 1.3],
+        //             [-2, 0]
+        //         ]
+        //     }
+        // ],
+        // angle: [
+        //     {
+        //         data: [
+        //             [-2.0, 1.1],
+        //             [1.2, 1.2],
+        //             [1.1, 0]
+        //         ]
+        //     }
+        // ]
     }
 });
-  window.a = a;  
+window.a = a;
 a.draw();
-a.on('mousedown', function (e,[x,y]) {
+a.on('mousedown', function (e, [x,y]) {
 
     this.add('point', {
         data: [
@@ -72,10 +72,10 @@ a.on('mousedown', function (e,[x,y]) {
             this.scaleY.invert(y)
         ]
     })
-   
+
 })
 
-a.on('touchstart', function (e,[x,y]) {
+a.on('touchstart', function (e, [x,y]) {
 
     this.add('point', {
         data: [
@@ -91,12 +91,17 @@ var box = `
         <option value="move">启用缩放</option>
         <option value="add">禁止缩放</option>
         <option value="relation.verticalLine">垂线</option>
+        <option value="addElement.point">点</option>
+        <option value="addElement.segment">线段</option>
+         <option value="addElement.straight">直线</option>
+          <option value="addElement.angle">角度</option>
+           <option value="addElement.polygon">多边形</option>
     </select>
 </div>
 `
 $('body').append(box)
-$('#limit').on('change',function(){
+$('#limit').on('change', function () {
 
-    a.setMode(this.value );
+    a.setMode(this.value);
 })
 

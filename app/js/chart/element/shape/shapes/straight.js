@@ -4,9 +4,7 @@ import util from '../../../util.js';
 class Straight extends Segment {
     constructor(chart, options) {
         //options.color = '#ccc';
-        if (options.data.length != 2) {
-            throw new Error('只能传入2个点组成一个直线');
-        }
+       
         super(...arguments);
         this.name = 'straight';
     }

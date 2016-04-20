@@ -1,18 +1,19 @@
 import events from 'events';
 import util from "../../util.js";
-
+import Element from '../element.js'
 const gClassName = 'shape';
-class Base extends events {
+class Base extends Element {
 
-    constructor(chart, config) {
+    constructor(manager, config={}) {
 
-        super()
+        super(...arguments);
         this.setMaxListeners(0);
 
-        this.chart = chart;
+       
         this.isDrew = false;
         this.id = config.id ? config.id : ('shape-' + util.uniqueId());
 
+        var chart = this.chart;
         this.scaleX = chart.scaleX;
         this.scaleY = chart.scaleY;
         this.graph = chart.graph;
@@ -32,7 +33,16 @@ class Base extends events {
 
     }
 
+    addShape(shape){
+        return super.addShape(shape);
+    }
 
+    end(){
+        console.log('end');
+        this.bindEvent();
+        this.draw();
+        this.manager.endCurrentElement();
+    }
 
     draw() {
 
@@ -114,6 +124,10 @@ class Base extends events {
         this.chart.removeShapeRef(this);
         
 
+    }
+    
+    bindEvent(){
+        
     }
 }
 

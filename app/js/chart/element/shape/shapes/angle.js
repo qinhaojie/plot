@@ -3,13 +3,16 @@ import util from '../../../util.js';
 
 
 class Angle extends Line {
-    constructor(chart, options) {
+    constructor(manager, options) {
         //options.color = '#ccc';
-        if (options.data.length != 3) {
-            throw new Error('只能传入三个点组成一个角');
-        }
+       
         super(...arguments);
         this.name = 'angle';
+       
+        this.necessaryShape = {
+            point: 3
+        }
+       
     }
 
     getData() {
