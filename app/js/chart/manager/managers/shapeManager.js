@@ -23,7 +23,8 @@ class sManager extends Manager{
     constructor(chart) {
 
         super(...arguments,shapes);
-
+        //描点的过程中产生的点
+        this.processPoints = [];
     }
 
     bindEvent(){
@@ -31,13 +32,12 @@ class sManager extends Manager{
         
         super.bindEvent();
         this.chart.on('modechange', mode => {
-            if (mode.indexOf('addElement.') < 0) {
-                this.stopElement()
-            } else {
+            this.stopElement()
+            if (mode.indexOf('addElement.') > -1) {
                 let type = mode.split('.')[1];
                 this.typeName = type;
                 this.startElement(type);
-            }
+            } 
         })
 
         this.chart.on('clickBlank', p => {
@@ -47,6 +47,7 @@ class sManager extends Manager{
                 var point=this.addByConfig('point',{
                     data:p
                 });
+                this.processPoints.push(point);
                 this.currentElement.addShape(point);
             }
             
@@ -65,6 +66,19 @@ class sManager extends Manager{
         var ret = new this.types[type](this,config,true);
         this.addElement(ret);
         return ret;
+    }
+
+    stopElement(){
+        super.stopElement();
+        this.processPoints.forEach(p=>{
+            p.destroy();
+        });
+        this.processPoints = [];
+    }
+
+    endCurrentElement(){
+        super.endCurrentElement();
+        this.processPoints = [];
     }
 
    

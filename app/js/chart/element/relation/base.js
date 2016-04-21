@@ -41,7 +41,8 @@ class Relation extends Element{
     
 
     end() {
-        console.log('end')
+        console.log('end');
+        this.isEnd = true;
         this.buildDom();
         this.bindEvent();
         this.draw();
@@ -72,15 +73,18 @@ class Relation extends Element{
     }
     
     destroy(){
-        this.group.remove();
-        for(let name of this.shapeNames){
-            this.shapes[name].forEach(shape =>{
-                shape.removeListener('draw',this.drawCall);
-                shape.removeRelation(this);
-            })
+        if(this.isEnd){
+            this.group.remove();
+            for(let name of this.shapeNames){
+                this.shapes[name].forEach(shape =>{
+                    shape.removeListener('draw',this.drawCall);
+                    shape.removeRelation(this);
+                })
+            }
+            this.manager.removeElementRef(this);
+            this.shapes = null;
         }
-        this.manager.removeElementRef(this);
-        this.shapes = null;
+       
     }
 }
 

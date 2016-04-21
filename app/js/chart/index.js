@@ -438,7 +438,11 @@ class Chart extends events {
 
     removeShapeRef(shape) {
         var name = shape.name;
-        var i = this.content[name].indexOf(shape);
+        var i;
+        if(this.content[name]){
+            i = this.content[name].indexOf(shape);
+        }
+
         if (i > -1) {
             this.content[name].splice(i, 1);
             delete this.shapeMap[shape.id]

@@ -22,7 +22,9 @@ class Point extends Base {
         this.buildDom();
         
         this.name = 'point';
-        
+
+        this.shapeNames=[];
+
         if (autoDraw) {
             this.draw();
         }

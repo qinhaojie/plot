@@ -18,9 +18,9 @@ class Line extends Base {
         super(...arguments);
 
         this.points = [];
-        let i = 0;
+
         for (let point of data) {
-            
+
             if (!point.coordinate) {
 
                 point = manager.addByConfig('point', {
@@ -30,23 +30,15 @@ class Line extends Base {
 
 
 
-            
+
             this.points.push(point);
-            if(i>0){
-                let segment = manager.addByConfig('segment', {
-                    data: [
-                        this.points[i-1],
-                        point
-                    ]
-                })
-            }
-            i++;
+
         }
 
         this.color = color;
         this.r = r;
         this.stroke = stroke;
-        this.buildDom();
+
         
         this.name = 'line';
         
@@ -57,18 +49,25 @@ class Line extends Base {
             point: Infinity
         }
         this.shapeNames = Object.keys(this.shapes)
-        
+        this.buildDom();
         if (autoDraw) {
+
             this.draw();
         }
 
         
     }
 
+    buildDom(){
+        super.buildDom();
+
+    }
+
     draw() {
 
-        //var path = this.getData();
 
+        // var path = this.getData();
+        //
         // this.dom
         //     .attr('d', path)
         // this.proxyDom
@@ -130,8 +129,24 @@ class Line extends Base {
     }
 
     end(){
+        let i = 0;
+        for (let point of this.points) {
+
+
+            if(i>0){
+                let segment = this.manager.addByConfig('segment', {
+                    data: [
+                        this.points[i-1],
+                        point
+                    ]
+                })
+            }
+            i++;
+        }
         super.end();
     }
+    
+    
 
 }
 

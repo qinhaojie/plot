@@ -119,7 +119,7 @@ class Base extends Element {
         this.relations.forEach(r => {
             r.destroy();
         });
-        this.relations = null;
+        this.relations = [];
         this.chart.removeListener('draw', this.drawCall);
         this.chart.removeShapeRef(this);
         
