@@ -16,7 +16,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, "build"),
         publicPath: "/assets/js/",
-        filename: "[name].b.js",
+        filename: "[name].js",
         chunkFilename: "[id].chunk.js"
 
     },
@@ -24,9 +24,8 @@ module.exports = {
         historyApiFallback: true,
         //hot: true,
         inline: true,
-        progress: true,
+        
         contentBase: 'app/',
-        host:'192.168.41.155'
     },
     plugins: [
 
@@ -52,7 +51,7 @@ module.exports = {
         loaders: [
             {
                 test: /\.jsx?$/,
-                loader: 'babel',
+                loader: 'babel-loader',
                 include: APP_PATH,
                 query: {
                     presets: ['es2015']

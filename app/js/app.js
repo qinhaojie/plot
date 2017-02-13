@@ -1,12 +1,4 @@
 import Chart from './chart/index.js';
-import * as math from 'mathjs'
-window.math = math
-var parser = math.parser();
-
-parser.eval('f(x)=sin(x)')
-var fnn = parser.get('f');
-parser.eval('f2(x)=cos(x)');
-
 
 var a = new Chart({
     container: document.getElementById('app'),
@@ -17,14 +9,7 @@ var a = new Chart({
         domain: [-2, 2]
     },
     content: {
-        // func: [
-        //     {
-        //         data: parser.get('f2')
-        //     },
-        //     {
-        //         data: fnn
-        //     }
-        // ],
+        
         // point: [
         //     {
         //         data: [1, 0]
@@ -35,8 +20,8 @@ var a = new Chart({
         //         data: [
         //             [1, 1],
         //             [3, 1],
-        //
-        //
+        
+        
         //         ],
         //         id: '213123'
         //     }
@@ -62,40 +47,22 @@ var a = new Chart({
         // ]
     }
 });
-window.a = a;
+
 a.draw();
-a.on('mousedown', function (e, [x,y]) {
 
-    this.add('point', {
-        data: [
-            this.scaleX.invert(x),
-            this.scaleY.invert(y)
-        ]
-    })
-
-})
-
-a.on('touchstart', function (e, [x,y]) {
-
-    this.add('point', {
-        data: [
-            this.scaleX.invert(x),
-            this.scaleY.invert(y)
-        ]
-    })
-})
 
 var box = `
     <div id="box">
+    选择模式
     <select name="a" id="limit">
-        <option value="move">启用缩放</option>
-        <option value="add">禁止缩放</option>
+        <option value="move">移动与缩放</option>
         <option value="relation.verticalLine">垂线</option>
+        <option value="relation.parallelLine">平行线</option>
         <option value="addElement.point">点</option>
         <option value="addElement.segment">线段</option>
-         <option value="addElement.straight">直线</option>
-          <option value="addElement.angle">角度</option>
-           <option value="addElement.polygon">多边形</option>
+        <option value="addElement.straight">直线</option>
+        <option value="addElement.angle">角度</option>
+        <option value="addElement.polygon">多边形</option>
     </select>
 </div>
 `

@@ -19,6 +19,14 @@ class Point extends Base {
         this.color = color;
         this.r = r;
         this.stroke = stroke;
+
+         this.shapes = {
+            point: []
+        }
+        this.necessaryShape = {
+            point: 1
+        }
+
         this.buildDom();
         
         this.name = 'point';
@@ -118,6 +126,17 @@ class Point extends Base {
 
     }
 
+    addShape(s) {
+        this.coordinate = [...s.coordinate]
+        this.lastCoordinate = [...s.coordinate]
+        this.shapes.point.push(s)
+        this.checkEnd()
+    }
+
+    end() {
+        this.shapes.point[0].destroy()
+        super.end()
+    }
 
 }
 
