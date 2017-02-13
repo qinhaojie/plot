@@ -6,6 +6,10 @@
 ### 预览
 ![preview](./img/preview.png)
 
+### 在线地址
+
+[演示](https://qinhaojie.github.io/plot)
+
 ### 功能
 
 - 画布的移动与缩放
